@@ -1,0 +1,25 @@
+{
+  "people": {
+    "total": 1284,
+    "new": { "1d": 12, "7d": 57, "30d": 203 },
+    "active": { "1d": 148, "7d": 512, "30d": 903 }
+  },
+  "organisations": { "trial": 18, "paying": 42, "trialEnded": 25, "suspended": 3 },
+  "revenue": {
+    "mrr": [{ "currency": "USD", "amount": 120000 }],
+    "arr": [{ "currency": "USD", "amount": 1440000 }],
+    "change": {
+      "7d": [{ "currency": "USD", "amount": 1000, "percent": 0.8 }],
+      "30d": [{ "currency": "USD", "amount": 3500, "percent": 3.0 }]
+    }
+  },
+  "positives": {
+    "signUps": { "1d": 9 },
+    "conversions": { "1d": 3 },
+    "meetings": { "1d": 4 },
+    "newPayingThisMonth": 2,
+    "trialsConverted30d": 7
+  },
+  "negatives": { "churnedThisMonth": 1, "pastDue": 2, "trialsExpired30d": 3 },
+  "regions": { "missing": [] }
+}
