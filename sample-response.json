@@ -4,7 +4,7 @@
     "new": { "1d": 12, "7d": 57, "30d": 203 },
     "active": { "1d": 148, "7d": 512, "30d": 903 }
   },
-  "organisations": { "trial": 18, "paying": 42, "trialEnded": 25, "suspended": 3 },
+  "breakdown": [42, 18, 25, 3],
   "revenue": {
     "mrr": [{ "currency": "USD", "amount": 120000 }],
     "arr": [{ "currency": "USD", "amount": 1440000 }],

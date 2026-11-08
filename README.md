@@ -7,6 +7,7 @@ guide explains what that endpoint receives and what it should reply.
 - [Quick start](#quick-start)
 - [The request](#the-request)
 - [The reply](#the-reply)
+- [The breakdown screen](#the-breakdown-screen)
 - [Money](#money)
 - [Using your own JSON](#using-your-own-json)
 - [HTTPS](#https)
@@ -65,7 +66,7 @@ The standard format (also in [sample-response.json](sample-response.json)):
     "new": { "1d": 12, "7d": 57, "30d": 203 },
     "active": { "1d": 148, "7d": 512, "30d": 903 }
   },
-  "organisations": { "trial": 18, "paying": 42, "trialEnded": 25, "suspended": 3 },
+  "breakdown": [42, 18, 25, 3],
   "revenue": {
     "mrr": [{ "currency": "USD", "amount": 120000 }],
     "arr": [{ "currency": "USD", "amount": 1440000 }],
@@ -95,8 +96,8 @@ fields are ignored. `1d`, `7d` and `30d` are rolling windows: the last 24 hours,
 | Total users | `people.total` | Users screen, big number |
 | New users | `people.new.1d` / `7d` / `30d` | Users screen: today, week and month chips |
 | Active users | `people.active.1d` / `7d` / `30d` | Users screen: bars as a share of the total |
-| Organisations | `organisations.trial`, `paying`, `trialEnded`, `suspended` | Organisations screen: ring and legend |
-| Trials converted / expired, 30 days | `positives.trialsConverted30d`, `negatives.trialsExpired30d` | Organisations screen: trial → paid rate |
+| Breakdown | `breakdown.0` to `breakdown.3`: up to four counts | Breakdown screen: ring, legend, and group 1 as the big number. You name the groups ([below](#the-breakdown-screen)) |
+| Trials converted / expired, 30 days | `positives.trialsConverted30d`, `negatives.trialsExpired30d` | Breakdown screen: the conversion rate, when it's chosen |
 | MRR | `revenue.mrr` | Revenue screen, big number. Optionally the clock screen's bottom strip |
 | ARR | `revenue.arr` | Revenue screen. Optional: when it's missing, DeskBot shows 12 × MRR |
 | MRR change | `revenue.change.7d` / `30d` | Revenue screen: ▲/▼ chips |
@@ -113,6 +114,33 @@ records MRR every hour.
 Celebrations and alerts compare each reply with the one before, so make the counters monotonic
 within their window: `newPayingThisMonth` should only go up during a month. Each one can be turned
 off on the settings page.
+
+## The breakdown screen
+
+One screen splits a total into up to four groups: a ring, the first group's count in the middle,
+and a legend. You decide what it shows under **Breakdown screen** on the settings page: a title, a
+name for each count in `breakdown`, in order, and the card at the bottom. Some starting points:
+
+| Preset | Title | Groups | Card at the bottom |
+|---|---|---|---|
+| Customers (a new clock's) | Customers | Active, New, At risk, Lost | First group's share |
+| Subscriptions with trials | Accounts | Paying, In trial, Trial ended, Suspended | Trial → paid · 30d |
+| Orders | Orders | Delivered, Shipped, Processing, Cancelled | First group's share |
+| Sales deals | Deals | Won, Open, Stalled, Lost | First group's share |
+
+- **Fewer groups.** Send fewer counts and leave the other names empty: a group without a name isn't
+  shown. The first group always has one.
+- **The card** shows the first group's share of all of them ("Active of 88 · 48%"), or a conversion
+  rate: converted ÷ (converted + expired) over the period, from `positives.trialsConverted30d` and
+  `negatives.trialsExpired30d`. When neither happened in the period, it shows the first group ÷
+  (first + third), all time.
+- **Names** are plain characters, without accents or emoji, which the clock's fonts don't have.
+  Titles take up to 16 characters, names 14.
+- **Counts from your own JSON.** Map group 1 to 4 under API format, for example
+  `orders.delivered` for `{"orders": {"delivered": 1180}}`.
+- **Before firmware 0.4** this was the Organisations screen, read from `organisations.paying`,
+  `trial`, `trialEnded` and `suspended`. A clock that already had an API address keeps those paths
+  and names when it updates. A new one reads `breakdown`.
 
 ## Money
 
@@ -153,7 +181,7 @@ give the path of each value:
 - After **Test connection**, fields that weren't in your reply are marked.
 
 What stays fixed: the screens and the numbers on them. A path can only say where to find each value,
-not add new ones.
+not add new ones. The breakdown screen's title and group names are yours to choose.
 
 ## HTTPS
 
